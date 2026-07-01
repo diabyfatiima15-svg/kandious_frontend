@@ -1,0 +1,72 @@
+:root {
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+#root {
+  min-height: 100vh;
+  width: 100%;
+}
+
+input,
+select,
+textarea,
+button {
+  color-scheme: light;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+input,
+select,
+textarea {
+  color: #0d0d0d !important;
+  background-color: #ffffff !important;
+}
+
+/* Labels visibles partout */
+label {
+  color: #555555 !important;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+/* Champs dans les modals et formulaires */
+.modal input,
+.modal select,
+.modal textarea,
+.modal-form input,
+.modal-form select,
+.modal-form textarea,
+.form-group input,
+.form-group select,
+.form-group textarea {
+  color: #0d0d0d !important;
+  background-color: #ffffff !important;
+  border: 1.5px solid #ede8df !important;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: #d4af37 !important;
+  box-shadow: 0 0 0 3px rgba(212,175,55,0.1) !important;
+  outline: none !important;
+}
+
+/* Placeholder lisible */
+input::placeholder,
+textarea::placeholder {
+  color: #aaaaaa !important;
+  opacity: 1;
+}
