@@ -120,7 +120,7 @@ const Dashboard = () => {
 
             {/* Bannière chiffres — ADMIN seulement */}
             {stats && hasRole('ADMIN') && (
-              <div style={{ display:'flex', gap:'32px', marginTop:'18px', alignItems:'flex-end' }}>
+              <div style={{ display:'flex', gap:'32px', marginTop:'18px', alignItems:'flex-end', flexWrap:'wrap' }}>
                 {[
                   { val: stats.totalClients || 0, label:'Clientes' },
                   { val: stats.totalProduits || 0, label:'Produits' },
@@ -149,7 +149,7 @@ const Dashboard = () => {
 
             {/* Bannière chiffres — VENDEUR */}
             {stats && hasRole('VENDEUR') && (
-              <div style={{ display:'flex', gap:'32px', marginTop:'18px', alignItems:'flex-end' }}>
+              <div style={{ display:'flex', gap:'32px', marginTop:'18px', alignItems:'flex-end', flexWrap:'wrap' }}>
                 {[
                   { val: stats.totalProduits || 0, label:'Produits' },
                   { val: stats.produitsEnRupture || 0, label:'En rupture' },
@@ -180,10 +180,7 @@ const Dashboard = () => {
 
         {/* KPIs ADMIN */}
         {hasRole('ADMIN') && stats && (
-          <div style={{
-            display:'grid', gridTemplateColumns:'repeat(4,1fr)',
-            gap:'14px', marginBottom:'22px',
-          }}>
+          <div className="dash-grid-4">
             {[
               { label:'Ventes du jour', val:stats.ventesJour || 0, icon:'🛒' },
               { label:'CA du jour', val:formatMontant(stats.caJour), icon:'💰' },
@@ -206,10 +203,7 @@ const Dashboard = () => {
 
         {/* KPIs VENDEUR */}
         {hasRole('VENDEUR') && stats && (
-          <div style={{
-            display:'grid', gridTemplateColumns:'repeat(3,1fr)',
-            gap:'14px', marginBottom:'22px',
-          }}>
+          <div className="dash-grid-3">
             {[
               { label:'Total produits', val:stats.totalProduits || 0, icon:'👗', color:'var(--primary)' },
               { label:'Produits en rupture', val:stats.produitsEnRupture || 0, icon:'⚠️', color:'#e53935' },
@@ -231,10 +225,7 @@ const Dashboard = () => {
 
         {/* KPIs CAISSIER */}
         {hasRole('CAISSIER') && stats && (
-          <div style={{
-            display:'grid', gridTemplateColumns:'repeat(2,1fr)',
-            gap:'14px', marginBottom:'22px',
-          }}>
+          <div className="dash-grid-2">
             {[
               { label:'Ventes du jour', val:stats.ventesJour || 0, icon:'🛒' },
               { label:'Factures du jour', val:stats.facturesJour || 0, icon:'🧾' },
@@ -253,7 +244,7 @@ const Dashboard = () => {
         )}
 
         {/* IMAGE CARDS — tous les rôles */}
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:'14px', marginBottom:'22px' }}>
+        <div className="dash-grid-3">
           {[
             { img:'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=600&q=80', label:'Collection', title:'Robes & Ensembles' },
             { img:'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=600&q=80', label:'Tendance', title:'Voiles & Jeans' },
@@ -294,7 +285,7 @@ const Dashboard = () => {
         {hasRole('ADMIN') && stats && (
           <>
             {/* CHARTS */}
-            <div style={{ display:'grid', gridTemplateColumns:'1.6fr 1fr', gap:'14px', marginBottom:'14px' }}>
+            <div className="dash-charts-row">
               <div className="card">
                 <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'18px' }}>
                   <h3 style={{ fontFamily:'Playfair Display,serif', fontSize:'15px', color:'var(--noir)' }}>
@@ -378,7 +369,7 @@ const Dashboard = () => {
             </div>
 
             {/* DERNIÈRES VENTES + TOP + ALERTES */}
-            <div style={{ display:'grid', gridTemplateColumns:'1fr 300px', gap:'14px' }}>
+            <div className="dash-bottom-row">
               <div className="card">
                 <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'18px' }}>
                   <h3 style={{ fontFamily:'Playfair Display,serif', fontSize:'15px', color:'var(--noir)' }}>
@@ -386,6 +377,7 @@ const Dashboard = () => {
                   </h3>
                   <span className="chip">Aujourd'hui</span>
                 </div>
+                <div style={{ overflowX:'auto' }}>
                 <table className="data-table" style={{ fontSize:'12.5px' }}>
                   <thead>
                     <tr>
@@ -427,6 +419,7 @@ const Dashboard = () => {
                     )}
                   </tbody>
                 </table>
+                </div>
               </div>
 
               <div style={{ display:'flex', flexDirection:'column', gap:'14px' }}>
@@ -513,7 +506,7 @@ const Dashboard = () => {
 
         {/* SECTION ANALYTIQUE — VENDEUR : top produits + alertes stock */}
         {hasRole('VENDEUR') && stats && (
-          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'14px' }}>
+          <div className="dash-grid-2">
 
             {/* TOP PRODUITS — VENDEUR */}
             <div className="card">

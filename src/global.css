@@ -469,23 +469,60 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; }
   border: 1px solid rgba(212,175,55,0.2);
 }
 
+/* ===== GRILLES DASHBOARD — responsive fiable ===== */
+.dash-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.dash-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.dash-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.dash-charts-row {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.dash-bottom-row {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 14px;
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 1200px) {
   .page-content { padding: 20px 24px; }
+}
+
+@media (max-width: 900px) {
+  .dash-grid-4,
+  .dash-grid-3,
+  .dash-grid-2,
+  .dash-charts-row,
+  .dash-bottom-row {
+    grid-template-columns: 1fr !important;
+  }
 }
 
 @media (max-width: 768px) {
   .page-content { padding: 16px; }
   .page-header { flex-direction: column; align-items: flex-start; gap: 12px; }
   .form-row { grid-template-columns: 1fr; }
-
-  /* Grilles de statistiques (KPIs) écrites en inline JSX
-     avec repeat(4,1fr), repeat(3,1fr) ou repeat(2,1fr) */
-  [style*="repeat(4"],
-  [style*="repeat(3"],
-  [style*="repeat(2"] {
-    grid-template-columns: 1fr !important;
-  }
 
   /* Tables : défilement horizontal plutôt que d'écraser la mise en page */
   .table-container {
