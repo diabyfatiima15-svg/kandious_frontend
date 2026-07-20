@@ -469,7 +469,7 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; }
   border: 1px solid rgba(212,175,55,0.2);
 }
 
-/* RESPONSIVE */
+/* ===== RESPONSIVE ===== */
 @media (max-width: 1200px) {
   .page-content { padding: 20px 24px; }
 }
@@ -478,4 +478,37 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; }
   .page-content { padding: 16px; }
   .page-header { flex-direction: column; align-items: flex-start; gap: 12px; }
   .form-row { grid-template-columns: 1fr; }
+
+  /* Grilles de statistiques (KPIs) écrites en inline JSX
+     avec repeat(4,1fr), repeat(3,1fr) ou repeat(2,1fr) */
+  [style*="repeat(4"],
+  [style*="repeat(3"],
+  [style*="repeat(2"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Tables : défilement horizontal plutôt que d'écraser la mise en page */
+  .table-container {
+    overflow-x: auto;
+  }
+  .data-table {
+    min-width: 640px;
+  }
+
+  /* Modals : occuper presque tout l'écran sur mobile */
+  .modal {
+    max-width: 94vw;
+    margin: 0 auto;
+  }
+
+  /* Cartes dashboard : un peu plus compactes */
+  .card { padding: 16px; }
+}
+
+@media (max-width: 480px) {
+  .page-content { padding: 12px; }
+  .btn-primary, .btn-secondary {
+    font-size: 12px;
+    padding: 9px 14px;
+  }
 }
