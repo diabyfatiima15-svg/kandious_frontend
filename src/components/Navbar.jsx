@@ -12,6 +12,7 @@ const Navbar = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [totalNotifs, setTotalNotifs] = useState(0);
   const dropdownRef = useRef(null);
@@ -39,6 +40,11 @@ const Navbar = () => {
     return () =>
       document.removeEventListener('mousedown', handleClick);
   }, []);
+
+  // Fermer le menu mobile au changement de page
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
 
   // Charger notifications réelles
   useEffect(() => {
@@ -112,7 +118,9 @@ const Navbar = () => {
         position:'sticky', top:0, zIndex:300,
         boxShadow:'0 2px 20px rgba(0,0,0,0.3)',
         gap:'0',
-      }}>
+      }}
+      className="kandious-navbar"
+      >
 
         {/* LOGO */}
         <div style={{
@@ -145,15 +153,15 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* SÉPARATEUR */}
-        <div style={{
+        {/* SÉPARATEUR — masqué sur mobile */}
+        <div className="navbar-separator" style={{
           width:'1px', height:'26px',
           background:'rgba(212,175,55,0.2)',
           marginRight:'16px', flexShrink:0
         }} />
 
-        {/* NAV LINKS */}
-        <div style={{
+        {/* NAV LINKS — desktop uniquement */}
+        <div className="navbar-links-desktop" style={{
           display:'flex', gap:'0', flex:1,
           alignItems:'center', overflow:'hidden'
         }}>
@@ -195,6 +203,24 @@ const Navbar = () => {
             </Link>
           ))}
         </div>
+
+        {/* BOUTON HAMBURGER — mobile uniquement */}
+        <button
+          className="navbar-hamburger"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          style={{
+            display:'none',
+            background:'rgba(255,255,255,0.04)',
+            border:'1px solid rgba(212,175,55,0.2)',
+            borderRadius:'8px',
+            width:'40px', height:'40px',
+            alignItems:'center', justifyContent:'center',
+            cursor:'pointer', flexShrink:0, marginRight:'8px',
+          }}
+        >
+          <i className={`ti ${mobileMenuOpen ? 'ti-x' : 'ti-menu-2'}`}
+            style={{ fontSize:'20px', color:'var(--primary)' }} />
+        </button>
 
         {/* RIGHT */}
         <div style={{
@@ -246,6 +272,7 @@ const Navbar = () => {
                 borderRadius:'12px', overflow:'hidden',
                 boxShadow:'0 16px 40px rgba(0,0,0,0.4)',
                 zIndex:400, animation:'fadeIn 0.18s ease',
+                maxWidth:'90vw',
               }}>
                 {/* Header */}
                 <div style={{
@@ -413,7 +440,7 @@ const Navbar = () => {
                 justifyContent:'center',
                 fontSize:'10px', fontWeight:800, color:'#0d0d0d',
               }}>{initiales}</div>
-              <div>
+              <div className="navbar-user-info">
                 <div style={{
                   fontSize:'11.5px', fontWeight:700,
                   color:'#fff', whiteSpace:'nowrap'
@@ -446,6 +473,7 @@ const Navbar = () => {
                 borderRadius:'12px', overflow:'hidden',
                 boxShadow:'0 16px 40px rgba(0,0,0,0.4)',
                 zIndex:400, animation:'fadeIn 0.18s ease',
+                maxWidth:'90vw',
               }}>
                 <div style={{
                   padding:'14px 16px',
@@ -538,6 +566,46 @@ const Navbar = () => {
         </div>
       </nav>
 
+      {/* MENU MOBILE — dropdown plein écran */}
+      {mobileMenuOpen && (
+        <div className="navbar-mobile-menu" style={{
+          position:'fixed', top:'64px', left:0, right:0,
+          bottom:0, background:'var(--noir)',
+          zIndex:299, overflowY:'auto',
+          borderTop:'1px solid rgba(212,175,55,0.15)',
+          padding:'12px',
+        }}>
+          {navLinks.map(link => (
+            <Link
+              key={link.path}
+              to={link.path}
+              onClick={() => setMobileMenuOpen(false)}
+              style={{
+                display:'flex', alignItems:'center', gap:'14px',
+                padding:'14px 16px',
+                color: isActive(link.path)
+                  ? 'var(--primary)'
+                  : 'rgba(255,255,255,0.7)',
+                background: isActive(link.path)
+                  ? 'rgba(212,175,55,0.08)'
+                  : 'transparent',
+                fontSize:'14px', fontWeight:600,
+                textDecoration:'none',
+                borderRadius:'10px',
+                marginBottom:'4px',
+                borderLeft: isActive(link.path)
+                  ? '3px solid var(--primary)'
+                  : '3px solid transparent',
+              }}
+            >
+              <i className={`ti ${link.icon}`}
+                style={{ fontSize:'20px', width:'24px' }} />
+              {link.label}
+            </Link>
+          ))}
+        </div>
+      )}
+
       <ParametresDrawer
         isOpen={drawerOpen}
         onClose={() => setDrawerOpen(false)}
@@ -547,6 +615,24 @@ const Navbar = () => {
         @keyframes fadeIn {
           from { opacity:0; transform:translateY(-6px); }
           to { opacity:1; transform:translateY(0); }
+        }
+
+        @media (max-width: 900px) {
+          .navbar-links-desktop {
+            display: none !important;
+          }
+          .navbar-hamburger {
+            display: flex !important;
+          }
+          .navbar-separator {
+            display: none;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .navbar-user-info {
+            display: none;
+          }
         }
       `}</style>
     </>
