@@ -263,11 +263,6 @@ const Factures = () => {
                             </span>
                           )}
 
-                          {f.statut === 'ANNULEE' && hasRole('ADMIN') && (
-                            <button className="btn-icon btn-delete" onClick={() => handleDelete(f.id)} title="Supprimer définitivement">
-                              <i className="ti ti-trash" />
-                            </button>
-                          )}
                         </div>
                       </td>
                     </tr>
