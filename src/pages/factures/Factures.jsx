@@ -52,7 +52,7 @@ const Factures = () => {
   const genererPDF = async (facture) => {
     try {
       const doc = new jsPDF();
-      const details = facture.vente?.details || [];
+      const details = facture.vente?.venteDetails || [];
 
       doc.setFillColor(13, 13, 13);
       doc.rect(0, 0, 210, 35, 'F');
