@@ -20,7 +20,7 @@ const Produits = () => {
   const fileRef = useRef(null);
   const [form, setForm] = useState({
     nom:'', description:'', prixAchat:'', prixVente:'',
-    quantiteStock:'', taille:'', couleur:'', imageUrl:'', categorie:{ id:'' }
+    quantiteStock:'', taille:'', couleur:'', photo:'', categorie:{ id:'' }
   });
 
   useEffect(() => { fetchProduits(); fetchCategories(); }, []);
@@ -57,12 +57,12 @@ const Produits = () => {
 
   const handleEdit = (p) => {
     setProduitEdit(p);
-    setImagePreview(p.imageUrl || null);
+    setImagePreview(p.photo || null);
     setForm({
       nom:p.nom, description:p.description||'',
       prixAchat:p.prixAchat, prixVente:p.prixVente,
       quantiteStock:p.quantiteStock, taille:p.taille||'',
-      couleur:p.couleur||'', imageUrl:p.imageUrl||'',
+      couleur:p.couleur||'', photo:p.photo||'',
       categorie:{ id:p.categorie?.id||'' }
     });
     setShowModal(true);
@@ -83,7 +83,7 @@ const Produits = () => {
     setImagePreview(null);
     setForm({
       nom:'', description:'', prixAchat:'', prixVente:'',
-      quantiteStock:'', taille:'', couleur:'', imageUrl:'', categorie:{ id:'' }
+      quantiteStock:'', taille:'', couleur:'', photo:'', categorie:{ id:'' }
     });
   };
 
@@ -93,7 +93,7 @@ const Produits = () => {
     const reader = new FileReader();
     reader.onload = (ev) => {
       setImagePreview(ev.target.result);
-      setForm(prev => ({ ...prev, imageUrl: ev.target.result }));
+      setForm(prev => ({ ...prev, photo: ev.target.result }));
     };
     reader.readAsDataURL(file);
   };
@@ -237,7 +237,7 @@ const Produits = () => {
               <tbody>
                 {produitsFiltres.map(p => {
                   const statut = getStatut(p);
-                  const imgSrc = p.imageUrl || getDefaultImage(p);
+                  const imgSrc = p.photo || getDefaultImage(p);
                   return (
                     <tr key={p.id}>
                       <td>
@@ -455,7 +455,7 @@ const Produits = () => {
             </div>
             <div className="modal-form">
               <div style={{ display:'flex', justifyContent:'center', marginBottom:'8px' }}>
-                <img src={viewProduit.imageUrl || getDefaultImage(viewProduit)} alt={viewProduit.nom}
+                <img src={viewProduit.photo || getDefaultImage(viewProduit)} alt={viewProduit.nom}
                   onError={e => { e.target.src = 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=120&q=80'; }}
                   style={{ width:'110px', height:'110px', objectFit:'cover', borderRadius:'12px', border:'2px solid var(--primary)' }} />
               </div>
