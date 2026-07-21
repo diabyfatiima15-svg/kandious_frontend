@@ -52,7 +52,9 @@ const Factures = () => {
   const genererPDF = async (facture) => {
     try {
       const doc = new jsPDF();
+      const details = facture.vente?.details || [];
 
+      // En-tête
       doc.setFillColor(13, 13, 13);
       doc.rect(0, 0, 210, 35, 'F');
       doc.setTextColor(212, 175, 55);
@@ -80,17 +82,7 @@ const Factures = () => {
         ? `${facture.vente.client.nom} ${facture.vente.client.prenom || ''}`
         : 'Client anonyme', 45, 74);
 
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(12);
-      doc.text('Montant total :', 15, 90);
-      doc.setTextColor(184, 150, 12);
-      doc.text(formatMontant(facture.montant), 70, 90);
-
-      doc.setTextColor(0, 0, 0);
-      doc.setFontSize(10);
-      doc.setFont('helvetica', 'normal');
-      doc.text(`Mode de paiement : ${facture.vente?.modePaiement?.replace(/_/g, ' ') || '-'}`, 15, 98);
-
+      // QR Code
       const qrContenu = [
         "KANDIOU'S Fashion",
         `Facture N° ${facture.numero || facture.id}`,
@@ -100,6 +92,50 @@ const Factures = () => {
       const qrUrl = await QRCode.toDataURL(qrContenu, { width: 150, margin: 1 });
       doc.addImage(qrUrl, 'PNG', 155, 45, 35, 35);
 
+      // Tableau des articles
+      let y = 90;
+      doc.setFillColor(13, 13, 13);
+      doc.rect(15, y, 180, 8, 'F');
+      doc.setTextColor(212, 175, 55);
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'bold');
+      doc.text('Article', 18, y + 5.5);
+      doc.text('Qté', 110, y + 5.5);
+      doc.text('Prix unit.', 130, y + 5.5);
+      doc.text('Sous-total', 165, y + 5.5);
+
+      y += 8;
+      doc.setTextColor(0, 0, 0);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9);
+
+      details.forEach((d, i) => {
+        const rowY = y + (i * 8) + 6;
+        if (i % 2 === 0) {
+          doc.setFillColor(245, 240, 235);
+          doc.rect(15, y + (i * 8), 180, 8, 'F');
+        }
+        doc.text(String(d.produit?.nom || 'Produit'), 18, rowY);
+        doc.text(String(d.quantite || 0), 112, rowY);
+        doc.text(formatMontant(d.prixUnitaire).replace(' GNF',''), 130, rowY);
+        doc.text(formatMontant(d.sousTotal || (d.prixUnitaire * d.quantite)).replace(' GNF',''), 165, rowY);
+      });
+
+      y += (details.length * 8) + 10;
+
+      // Montant total
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(12);
+      doc.text('Montant total :', 15, y);
+      doc.setTextColor(184, 150, 12);
+      doc.text(formatMontant(facture.montant), 70, y);
+
+      doc.setTextColor(0, 0, 0);
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'normal');
+      doc.text(`Mode de paiement : ${facture.vente?.modePaiement?.replace(/_/g, ' ') || '-'}`, 15, y + 8);
+
+      // Footer
       doc.setFontSize(8);
       doc.setTextColor(150, 150, 150);
       doc.text('Merci pour votre confiance — KANDIOU\'S Fashion', 15, 280);
