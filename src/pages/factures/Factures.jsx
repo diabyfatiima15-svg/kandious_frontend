@@ -54,7 +54,6 @@ const Factures = () => {
       const doc = new jsPDF();
       const details = facture.vente?.details || [];
 
-      // En-tête
       doc.setFillColor(13, 13, 13);
       doc.rect(0, 0, 210, 35, 'F');
       doc.setTextColor(212, 175, 55);
@@ -82,7 +81,6 @@ const Factures = () => {
         ? `${facture.vente.client.nom} ${facture.vente.client.prenom || ''}`
         : 'Client anonyme', 45, 74);
 
-      // QR Code
       const qrContenu = [
         "KANDIOU'S Fashion",
         `Facture N° ${facture.numero || facture.id}`,
@@ -92,7 +90,6 @@ const Factures = () => {
       const qrUrl = await QRCode.toDataURL(qrContenu, { width: 150, margin: 1 });
       doc.addImage(qrUrl, 'PNG', 155, 45, 35, 35);
 
-      // Tableau des articles
       let y = 90;
       doc.setFillColor(13, 13, 13);
       doc.rect(15, y, 180, 8, 'F');
@@ -123,7 +120,6 @@ const Factures = () => {
 
       y += (details.length * 8) + 10;
 
-      // Montant total
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(12);
       doc.text('Montant total :', 15, y);
@@ -135,7 +131,6 @@ const Factures = () => {
       doc.setFont('helvetica', 'normal');
       doc.text(`Mode de paiement : ${facture.vente?.modePaiement?.replace(/_/g, ' ') || '-'}`, 15, y + 8);
 
-      // Footer
       doc.setFontSize(8);
       doc.setTextColor(150, 150, 150);
       doc.text('Merci pour votre confiance — KANDIOU\'S Fashion', 15, 280);
@@ -250,7 +245,6 @@ const Factures = () => {
                             <i className="ti ti-eye" />
                           </button>
 
-                          {/* PDF — seulement si la facture N'EST PAS annulée */}
                           {f.statut !== 'ANNULEE' ? (
                             <button className="btn-icon" onClick={() => genererPDF(f)} title="Télécharger PDF">
                               <i className="ti ti-download" />
