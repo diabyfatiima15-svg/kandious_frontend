@@ -1,11 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import jsPDF from 'jspdf';
 import QRCode from 'qrcode';
 import Navbar from '../../components/Navbar';
 import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
-import { useEffect } from 'react';
 
 const Factures = () => {
   const { hasRole } = useAuth();
@@ -54,7 +53,6 @@ const Factures = () => {
     try {
       const doc = new jsPDF();
 
-      // En-tête
       doc.setFillColor(13, 13, 13);
       doc.rect(0, 0, 210, 35, 'F');
       doc.setTextColor(212, 175, 55);
@@ -65,7 +63,6 @@ const Factures = () => {
       doc.setTextColor(255, 255, 255);
       doc.text('Boutique de vêtements féminins — Conakry, Guinée', 15, 26);
 
-      // Numéro facture
       doc.setTextColor(0, 0, 0);
       doc.setFontSize(14);
       doc.setFont('helvetica', 'bold');
@@ -76,7 +73,6 @@ const Factures = () => {
       doc.text(`Date : ${new Date(facture.dateEmission || facture.vente?.dateVente).toLocaleDateString('fr-FR')}`, 15, 56);
       doc.text(`Statut : ${facture.statut === 'ANNULEE' ? 'ANNULÉE' : 'Validée'}`, 15, 62);
 
-      // Client
       doc.setFont('helvetica', 'bold');
       doc.text('Cliente :', 15, 74);
       doc.setFont('helvetica', 'normal');
@@ -84,30 +80,26 @@ const Factures = () => {
         ? `${facture.vente.client.nom} ${facture.vente.client.prenom || ''}`
         : 'Client anonyme', 45, 74);
 
-      // Montant
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(12);
       doc.text('Montant total :', 15, 90);
       doc.setTextColor(184, 150, 12);
-      doc.text(formatMontant(facture.montantTotal), 70, 90);
+      doc.text(formatMontant(facture.montant), 70, 90);
 
-      // Mode paiement
       doc.setTextColor(0, 0, 0);
       doc.setFontSize(10);
       doc.setFont('helvetica', 'normal');
       doc.text(`Mode de paiement : ${facture.vente?.modePaiement?.replace(/_/g, ' ') || '-'}`, 15, 98);
 
-      // QR Code
       const qrContenu = [
         "KANDIOU'S Fashion",
         `Facture N° ${facture.numero || facture.id}`,
-        `Montant : ${formatMontant(facture.montantTotal)}`,
+        `Montant : ${formatMontant(facture.montant)}`,
         `Statut : ${facture.statut}`,
       ].join('\n');
       const qrUrl = await QRCode.toDataURL(qrContenu, { width: 150, margin: 1 });
       doc.addImage(qrUrl, 'PNG', 155, 45, 35, 35);
 
-      // Footer
       doc.setFontSize(8);
       doc.setTextColor(150, 150, 150);
       doc.text('Merci pour votre confiance — KANDIOU\'S Fashion', 15, 280);
@@ -131,7 +123,6 @@ const Factures = () => {
       <Navbar />
       <div className="page-content">
 
-        {/* HEADER */}
         <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:'24px' }}>
           <div>
             <h1 style={{ fontFamily:'Playfair Display,serif', fontSize:'26px', fontWeight:700, color:'var(--noir)' }}>
@@ -143,7 +134,6 @@ const Factures = () => {
           </div>
         </div>
 
-        {/* STATS */}
         <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:'14px', marginBottom:'22px' }}>
           {[
             { label:'Total factures', val:factures.length, icon:'ti-receipt', color:'var(--primary)' },
@@ -162,7 +152,6 @@ const Factures = () => {
           ))}
         </div>
 
-        {/* SEARCH */}
         <div style={{ marginBottom:'16px' }}>
           <div style={{ position:'relative', display:'inline-block' }}>
             <i className="ti ti-search" style={{ position:'absolute', left:'13px', top:'50%', transform:'translateY(-50%)', color:'var(--text-light)', fontSize:'16px', zIndex:1 }} />
@@ -178,7 +167,6 @@ const Factures = () => {
           </div>
         </div>
 
-        {/* TABLE */}
         {loading ? (
           <div className="loading-container"><div className="loading-spinner" /></div>
         ) : (
@@ -208,7 +196,7 @@ const Factures = () => {
                           ? `${f.vente.client.nom} ${f.vente.client.prenom || ''}`
                           : 'Client anonyme'}
                       </td>
-                      <td style={{ fontWeight:800, color:'var(--noir)' }}>{formatMontant(f.montantTotal)}</td>
+                      <td style={{ fontWeight:800, color:'var(--noir)' }}>{formatMontant(f.montant)}</td>
                       <td>
                         <span style={{ background:badge.bg, color:badge.color, padding:'4px 10px', borderRadius:'20px', fontSize:'10px', fontWeight:800 }}>
                           {badge.label}
@@ -217,7 +205,6 @@ const Factures = () => {
                       <td>
                         <div style={{ display:'flex', gap:'6px' }}>
 
-                          {/* Voir — tout le monde */}
                           <button
                             className="btn-icon"
                             onClick={() => setViewFacture(f)}
@@ -246,7 +233,6 @@ const Factures = () => {
                             </span>
                           )}
 
-                          {/* Supprimer — ADMIN seulement, factures annulées */}
                           {f.statut === 'ANNULEE' && hasRole('ADMIN') && (
                             <button className="btn-icon btn-delete" onClick={() => handleDelete(f.id)} title="Supprimer définitivement">
                               <i className="ti ti-trash" />
@@ -269,7 +255,6 @@ const Factures = () => {
         )}
       </div>
 
-      {/* MODAL VOIR FACTURE */}
       {viewFacture && (
         <div className="modal-overlay" onClick={() => setViewFacture(null)}>
           <div className="modal" onClick={e => e.stopPropagation()}>
@@ -281,7 +266,7 @@ const Factures = () => {
               {[
                 { label:'Date', val:new Date(viewFacture.dateEmission || viewFacture.vente?.dateVente).toLocaleString('fr-FR') },
                 { label:'Cliente', val:viewFacture.vente?.client ? `${viewFacture.vente.client.nom} ${viewFacture.vente.client.prenom || ''}` : 'Client anonyme' },
-                { label:'Montant', val:formatMontant(viewFacture.montantTotal) },
+                { label:'Montant', val:formatMontant(viewFacture.montant) },
                 { label:'Mode de paiement', val:viewFacture.vente?.modePaiement?.replace(/_/g,' ') || '-' },
                 { label:'Statut', val:getStatutBadge(viewFacture.statut).label },
               ].map((r, i) => (
