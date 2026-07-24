@@ -16,6 +16,8 @@ import Parametres from './pages/parametres/Parametres';
 import Historique from './pages/historique/Historique';
 import Fournisseurs from './pages/fournisseurs/Fournisseurs';
 import Categories from './pages/categories/Categories';
+import InscriptionClient from './pages/auth/InscriptionClient';
+import ConnexionClient from './pages/auth/ConnexionClient';
 
 import Accueil from './pages/accueil/Accueil';
 
@@ -60,6 +62,9 @@ const AppRoutes = () => {
           ? <Accueil />
           : <Navigate to="/dashboard" replace />}
       />
+
+      <Route path="/inscription-client" element={<InscriptionClient />} />
+        <Route path="/connexion-client" element={<ConnexionClient />} />
 
       {/* Route publique — login */}
       <Route
