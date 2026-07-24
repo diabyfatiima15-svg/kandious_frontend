@@ -60,7 +60,6 @@ const Navbar = () => {
     };
     if (user) {
       fetchNotifications();
-      // Rafraîchir toutes les 2 minutes
       const interval = setInterval(fetchNotifications, 120000);
       return () => clearInterval(interval);
     }
@@ -88,16 +87,18 @@ const Navbar = () => {
     { path:'/factures', icon:'ti-receipt',
       label:'Factures',
       show:hasAnyRole('ADMIN','CAISSIER') },
+    { path:'/rapports', icon:'ti-chart-bar',
+      label:'Rapports',
+      show:hasRole('ADMIN') },
     { path:'/utilisateurs', icon:'ti-shield',
       label:'Utilisateurs',
       show:hasRole('ADMIN') },
     { path:'/historique', icon:'ti-history',
       label:'Historique', show:hasRole('ADMIN') },
-      { path:'/categories', icon:'ti-tag',
-  label:'Catégories', show:hasRole('ADMIN') },
-{ path:'/fournisseurs', icon:'ti-truck',
-  label:'Fournisseurs', show:hasRole('ADMIN') },
-  { path:'/rapports', icon:'ti-chart-bar', label:'Rapports', show:hasRole('ADMIN') },
+    { path:'/categories', icon:'ti-tag',
+      label:'Catégories', show:hasRole('ADMIN') },
+    { path:'/fournisseurs', icon:'ti-truck',
+      label:'Fournisseurs', show:hasRole('ADMIN') },
   ].filter(l => l.show);
 
   const iconBtnStyle = {
@@ -275,7 +276,6 @@ const Navbar = () => {
                 zIndex:400, animation:'fadeIn 0.18s ease',
                 maxWidth:'90vw',
               }}>
-                {/* Header */}
                 <div style={{
                   padding:'14px 16px',
                   borderBottom:'1px solid rgba(212,175,55,0.12)',
@@ -297,7 +297,6 @@ const Navbar = () => {
                   </span>
                 </div>
 
-                {/* Liste notifications */}
                 {notifications.length > 0
                   ? notifications.map((n, i) => (
                     <div key={i} style={{
@@ -362,7 +361,6 @@ const Navbar = () => {
                   )
                 }
 
-                {/* Bouton voir toutes les alertes */}
                 <div style={{
                   padding:'10px 16px',
                   borderTop:'1px solid rgba(212,175,55,0.1)'
