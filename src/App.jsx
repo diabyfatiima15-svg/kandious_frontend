@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { useEffect,useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { loadSavedTheme } from './themes';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -19,6 +19,7 @@ import Categories from './pages/categories/Categories';
 import InscriptionClient from './pages/auth/InscriptionClient';
 import ConnexionClient from './pages/auth/ConnexionClient';
 import MonCompte from './pages/clients/MonCompte';
+import CataloguePublic from './pages/public/CataloguePublic';
 
 import Accueil from './pages/accueil/Accueil';
 
@@ -38,10 +39,10 @@ const ProtectedRoute = ({ children, roles }) => {
 };
 
 const AppRoutes = () => {
-  
+
   const { isAuthenticated } = useAuth();
 
-       const location = useLocation();
+  const location = useLocation();
   const wasAuthenticated = useRef(false);
 
   useEffect(() => {
@@ -64,10 +65,12 @@ const AppRoutes = () => {
           : <Navigate to="/dashboard" replace />}
       />
 
+      {/* Routes publiques — espace client */}
       <Route path="/inscription-client" element={<InscriptionClient />} />
-        <Route path="/connexion-client" element={<ConnexionClient />} />
+      <Route path="/connexion-client" element={<ConnexionClient />} />
+      <Route path="/mon-compte" element={<MonCompte />} />
+      <Route path="/catalogue" element={<CataloguePublic />} />
 
-          <Route path="/mon-compte" element={<MonCompte />} />
       {/* Route publique — login */}
       <Route
         path="/login"
