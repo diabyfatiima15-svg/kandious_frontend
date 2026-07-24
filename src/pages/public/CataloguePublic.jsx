@@ -21,10 +21,8 @@ const CataloguePublic = () => {
 
   const fetchProduits = async () => {
     try {
-      const r = await api.get('/produits');
-      const disponibles = (Array.isArray(r.data) ? r.data : [])
-        .filter(p => p.statut === 'DISPONIBLE');
-      setProduits(disponibles);
+      const r = await api.get('/public/produits');
+      setProduits(Array.isArray(r.data) ? r.data : []);
     } catch {
       toast.error('Erreur chargement catalogue');
     } finally {
