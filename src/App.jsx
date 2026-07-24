@@ -18,7 +18,7 @@ import Fournisseurs from './pages/fournisseurs/Fournisseurs';
 import Categories from './pages/categories/Categories';
 import InscriptionClient from './pages/auth/InscriptionClient';
 import ConnexionClient from './pages/auth/ConnexionClient';
-import MonCompte from './pages/client/MonCompte';
+import MonCompte from './pages/clients/MonCompte';
 
 import Accueil from './pages/accueil/Accueil';
 
