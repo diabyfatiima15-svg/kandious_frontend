@@ -570,4 +570,38 @@
     width: 206px;
     height: 280px;
   }
+  .accueil-decouvrir-link {
+  margin-top: 16px;
+}
+
+.accueil-btn-tertiary {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 10.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.2s;
+  font-family: 'Inter', sans-serif;
+  padding: 4px;
+}
+
+.accueil-btn-tertiary:hover {
+  color: #d4af37;
+}
+
+.accueil-btn-tertiary i {
+  font-size: 12px;
+  color: #d4af37;
+}
+
+@media (max-width: 900px) {
+  .accueil-decouvrir-link {
+    display: flex;
+    justify-content: center;
+  }
+}
 }

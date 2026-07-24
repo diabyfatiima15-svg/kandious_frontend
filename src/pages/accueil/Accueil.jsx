@@ -51,13 +51,23 @@ const Accueil = () => {
             <div className="accueil-actions">
               <button
                 className="accueil-btn-primary"
-                onClick={() => navigate('/login')}
+                onClick={() => navigate('/connexion-client')}
               >
-                <i className="ti ti-login-2" />
-                Accéder à mon espace
+                <i className="ti ti-shopping-bag" />
+                Espace Client
               </button>
               <button
                 className="accueil-btn-secondary"
+                onClick={() => navigate('/login')}
+              >
+                <i className="ti ti-login-2" />
+                Espace Professionnel
+              </button>
+            </div>
+
+            <div className="accueil-decouvrir-link">
+              <button
+                className="accueil-btn-tertiary"
                 onClick={scrollToDecouvrir}
               >
                 Découvrir la maison
