@@ -49,98 +49,117 @@ const Factures = () => {
     return { label:'Validée', bg:'#e8f5e9', color:'#2e7d32' };
   };
 
-  const genererPDF = async (facture) => {
-    try {
-      const doc = new jsPDF();
-      const details = facture.vente?.venteDetails || [];
+const genererPDF = async (facture) => {
+  try {
+    const doc = new jsPDF();
+    const details = facture.vente?.venteDetails || [];
 
-      doc.setFillColor(13, 13, 13);
-      doc.rect(0, 0, 210, 35, 'F');
-      doc.setTextColor(212, 175, 55);
-      doc.setFontSize(20);
-      doc.setFont('helvetica', 'bold');
-      doc.text("KANDIOU'S Fashion", 15, 18);
-      doc.setFontSize(9);
-      doc.setTextColor(255, 255, 255);
-      doc.text('Boutique de vêtements féminins — Conakry, Guinée', 15, 26);
+    doc.setFillColor(13, 13, 13);
+    doc.rect(0, 0, 210, 35, 'F');
+    doc.setTextColor(212, 175, 55);
+    doc.setFontSize(20);
+    doc.setFont('helvetica', 'bold');
+    doc.text("KANDIOU'S Fashion", 15, 18);
+    doc.setFontSize(9);
+    doc.setTextColor(255, 255, 255);
+    doc.text('Boutique de vêtements féminins — Conakry, Guinée', 15, 26);
 
-      doc.setTextColor(0, 0, 0);
-      doc.setFontSize(14);
-      doc.setFont('helvetica', 'bold');
-      doc.text(`Facture N° ${facture.numero || facture.id}`, 15, 48);
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`Facture N° ${facture.numero || facture.id}`, 15, 48);
 
-      doc.setFontSize(10);
-      doc.setFont('helvetica', 'normal');
-      doc.text(`Date : ${new Date(facture.dateEmission || facture.vente?.dateVente).toLocaleDateString('fr-FR')}`, 15, 56);
-      doc.text(`Statut : ${facture.statut === 'ANNULEE' ? 'ANNULÉE' : 'Validée'}`, 15, 62);
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Date : ${new Date(facture.dateEmission || facture.vente?.dateVente).toLocaleDateString('fr-FR')}`, 15, 56);
+    doc.text(`Statut : ${facture.statut === 'ANNULEE' ? 'ANNULÉE' : 'Validée'}`, 15, 62);
 
-      doc.setFont('helvetica', 'bold');
-      doc.text('Cliente :', 15, 74);
-      doc.setFont('helvetica', 'normal');
-      doc.text(facture.vente?.client
-        ? `${facture.vente.client.nom} ${facture.vente.client.prenom || ''}`
-        : 'Client anonyme', 45, 74);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Cliente :', 15, 74);
+    doc.setFont('helvetica', 'normal');
+    doc.text(facture.vente?.client
+      ? `${facture.vente.client.nom} ${facture.vente.client.prenom || ''}`
+      : 'Client anonyme', 45, 74);
 
-      const qrContenu = [
-        "KANDIOU'S Fashion",
-        `Facture N° ${facture.numero || facture.id}`,
-        `Montant : ${formatMontant(facture.montant)}`,
-        `Statut : ${facture.statut}`,
-      ].join('\n');
-      const qrUrl = await QRCode.toDataURL(qrContenu, { width: 150, margin: 1 });
-      doc.addImage(qrUrl, 'PNG', 155, 45, 35, 35);
+    const qrContenu = [
+      "KANDIOU'S Fashion",
+      `Facture N° ${facture.numero || facture.id}`,
+      `Montant : ${formatMontant(facture.montant)}`,
+      `Statut : ${facture.statut}`,
+    ].join('\n');
+    const qrUrl = await QRCode.toDataURL(qrContenu, { width: 150, margin: 1 });
+    doc.addImage(qrUrl, 'PNG', 155, 45, 35, 35);
 
-      let y = 90;
-      doc.setFillColor(13, 13, 13);
-      doc.rect(15, y, 180, 8, 'F');
-      doc.setTextColor(212, 175, 55);
-      doc.setFontSize(9);
-      doc.setFont('helvetica', 'bold');
-      doc.text('Article', 18, y + 5.5);
-      doc.text('Qté', 110, y + 5.5);
-      doc.text('Prix unit.', 130, y + 5.5);
-      doc.text('Sous-total', 165, y + 5.5);
+    let y = 90;
+    doc.setFillColor(13, 13, 13);
+    doc.rect(15, y, 180, 8, 'F');
+    doc.setTextColor(212, 175, 55);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Article', 18, y + 5.5);
+    doc.text('Qté', 110, y + 5.5);
+    doc.text('Prix unit.', 130, y + 5.5);
+    doc.text('Sous-total', 165, y + 5.5);
 
-      y += 8;
-      doc.setTextColor(0, 0, 0);
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(9);
+    y += 8;
+    doc.setTextColor(0, 0, 0);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
 
-      details.forEach((d, i) => {
-        const rowY = y + (i * 8) + 6;
-        if (i % 2 === 0) {
-          doc.setFillColor(245, 240, 235);
-          doc.rect(15, y + (i * 8), 180, 8, 'F');
-        }
-        doc.text(String(d.produit?.nom || 'Produit'), 18, rowY);
-        doc.text(String(d.quantite || 0), 112, rowY);
-        doc.text(formatMontant(d.prixUnitaire).replace(' GNF',''), 130, rowY);
-        doc.text(formatMontant(d.sousTotal || (d.prixUnitaire * d.quantite)).replace(' GNF',''), 165, rowY);
-      });
+    details.forEach((d, i) => {
+      const rowY = y + (i * 8) + 6;
+      if (i % 2 === 0) {
+        doc.setFillColor(245, 240, 235);
+        doc.rect(15, y + (i * 8), 180, 8, 'F');
+      }
+      doc.text(String(d.produit?.nom || 'Produit'), 18, rowY);
+      doc.text(String(d.quantite || 0), 112, rowY);
+      doc.text(formatMontant(d.prixUnitaire).replace(' GNF',''), 130, rowY);
+      doc.text(formatMontant(d.sousTotal || (d.prixUnitaire * d.quantite)).replace(' GNF',''), 165, rowY);
+    });
 
-      y += (details.length * 8) + 10;
+    y += (details.length * 8) + 10;
 
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(12);
-      doc.text('Montant total :', 15, y);
-      doc.setTextColor(184, 150, 12);
-      doc.text(formatMontant(facture.montant), 70, y);
+    // ===== Détail HT / TVA / TTC =====
+    const montantHt = facture.vente?.montantHt || 0;
+    const tauxTva = facture.vente?.tva ?? 18;
+    const montantTva = (facture.montant || 0) - montantHt;
 
-      doc.setTextColor(0, 0, 0);
-      doc.setFontSize(10);
-      doc.setFont('helvetica', 'normal');
-      doc.text(`Mode de paiement : ${facture.vente?.modePaiement?.replace(/_/g, ' ') || '-'}`, 15, y + 8);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    doc.setTextColor(80, 80, 80);
+    doc.text('Montant HT :', 15, y);
+    doc.text(formatMontant(montantHt), 70, y);
 
-      doc.setFontSize(8);
-      doc.setTextColor(150, 150, 150);
-      doc.text('Merci pour votre confiance — KANDIOU\'S Fashion', 15, 280);
+    doc.text(`TVA (${tauxTva}%) :`, 15, y + 7);
+    doc.text(formatMontant(montantTva), 70, y + 7);
 
-      doc.save(`Facture-${facture.numero || facture.id}.pdf`);
-    } catch {
-      toast.error('Erreur génération PDF');
-    }
-  };
+    doc.setDrawColor(220, 220, 220);
+    doc.line(15, y + 11, 90, y + 11);
 
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(12);
+    doc.setTextColor(0, 0, 0);
+    doc.text('Montant TTC :', 15, y + 19);
+    doc.setTextColor(184, 150, 12);
+    doc.text(formatMontant(facture.montant), 70, y + 19);
+
+    y += 19;
+
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Mode de paiement : ${facture.vente?.modePaiement?.replace(/_/g, ' ') || '-'}`, 15, y + 10);
+
+    doc.setFontSize(8);
+    doc.setTextColor(150, 150, 150);
+    doc.text('Merci pour votre confiance — KANDIOU\'S Fashion', 15, 280);
+
+    doc.save(`Facture-${facture.numero || facture.id}.pdf`);
+  } catch {
+    toast.error('Erreur génération PDF');
+  }
+};
   const facturesFiltrees = factures.filter(f => {
     const terme = search.toLowerCase();
     if (!terme) return true;
