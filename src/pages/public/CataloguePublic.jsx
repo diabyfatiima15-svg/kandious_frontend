@@ -2,17 +2,16 @@ import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import api from '../../services/api';
+import { usePanier } from '../../context/PanierContext';
 
 const CataloguePublic = () => {
   const navigate = useNavigate();
+  const { ajouterAuPanier, totalArticles } = usePanier();
   const [produits, setProduits] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [categorieFiltre, setCategorieFiltre] = useState('');
-
-  const clientToken = localStorage.getItem('clientToken');
-  const clientUser = JSON.parse(localStorage.getItem('clientUser') || 'null');
 
   useEffect(() => {
     fetchProduits();
@@ -56,11 +55,14 @@ const CataloguePublic = () => {
     return 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=400&q=80';
   };
 
-  const handleVoirProduit = () => {
+  const handleCommander = (produit) => {
+    const clientToken = localStorage.getItem('clientToken');
     if (!clientToken) {
-      toast.info('Connectez-vous pour ajouter au panier');
+      toast.info('Connectez-vous ou créez un compte pour commander');
       navigate('/connexion-client');
+      return;
     }
+    ajouterAuPanier(produit);
   };
 
   return (
@@ -77,17 +79,12 @@ const CataloguePublic = () => {
           </span>
         </Link>
 
-        {clientUser ? (
-          <button onClick={() => navigate('/mon-compte')} style={accountBtnStyle}>
-            <i className="ti ti-user-circle" style={{ fontSize: '16px' }} />
-            <span className="hide-mobile">{clientUser.prenom}</span>
-          </button>
-        ) : (
-          <button onClick={() => navigate('/connexion-client')} style={accountBtnStyle}>
-            <i className="ti ti-login-2" style={{ fontSize: '15px' }} />
-            <span className="hide-mobile">Se connecter</span>
-          </button>
-        )}
+        <button onClick={() => navigate('/panier')} style={cartBtnStyle}>
+          <i className="ti ti-shopping-cart" style={{ fontSize: '17px' }} />
+          {totalArticles > 0 && (
+            <span style={cartBadgeStyle}>{totalArticles}</span>
+          )}
+        </button>
       </div>
 
       <div style={contentStyle}>
@@ -139,7 +136,7 @@ const CataloguePublic = () => {
         ) : (
           <div style={gridStyle}>
             {produitsFiltres.map(p => (
-              <div key={p.id} style={productCardStyle} onClick={handleVoirProduit}>
+              <div key={p.id} style={productCardStyle}>
                 <div style={{ position: 'relative', overflow: 'hidden', borderRadius: '12px 12px 0 0' }}>
                   <img
                     src={p.photo || getDefaultImage(p)}
@@ -153,9 +150,13 @@ const CataloguePublic = () => {
                   <div style={{ fontSize: '13.5px', fontWeight: 700, color: '#fff', marginBottom: '6px' }}>
                     {p.nom}
                   </div>
-                  <div style={{ fontFamily: 'Playfair Display, serif', fontSize: '17px', fontWeight: 700, color: '#d4af37' }}>
+                  <div style={{ fontFamily: 'Playfair Display, serif', fontSize: '17px', fontWeight: 700, color: '#d4af37', marginBottom: '10px' }}>
                     {formatMontant(p.prixVente)}
                   </div>
+                  <button onClick={() => handleCommander(p)} style={commanderBtnStyle}>
+                    <i className="ti ti-shopping-bag" style={{ fontSize: '14px' }} />
+                    Commander
+                  </button>
                 </div>
               </div>
             ))}
@@ -184,11 +185,18 @@ const logoBoxStyle = {
   display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(212,175,55,0.08)',
 };
 
-const accountBtnStyle = {
-  display: 'flex', alignItems: 'center', gap: '7px',
+const cartBtnStyle = {
+  position: 'relative',
+  display: 'flex', alignItems: 'center', justifyContent: 'center',
   background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.25)',
-  color: '#d4af37', padding: '9px 14px', borderRadius: '9px',
-  fontSize: '12px', fontWeight: 700, cursor: 'pointer',
+  color: '#d4af37', width: '38px', height: '38px', borderRadius: '9px', cursor: 'pointer',
+};
+
+const cartBadgeStyle = {
+  position: 'absolute', top: '-6px', right: '-6px',
+  background: '#d4af37', color: '#0d0d0d',
+  fontSize: '9px', fontWeight: 800, width: '17px', height: '17px',
+  borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
 };
 
 const contentStyle = {
@@ -224,7 +232,7 @@ const gridStyle = {
 
 const productCardStyle = {
   background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(212,175,55,0.15)',
-  borderRadius: '12px', overflow: 'hidden', cursor: 'pointer', transition: 'transform 0.2s',
+  borderRadius: '12px', overflow: 'hidden',
 };
 
 const productImgStyle = {
@@ -236,6 +244,12 @@ const catBadgeStyle = {
   background: 'rgba(13,13,13,0.85)', color: '#d4af37',
   fontSize: '9px', fontWeight: 700, padding: '4px 10px',
   borderRadius: '20px', border: '1px solid rgba(212,175,55,0.3)',
+};
+
+const commanderBtnStyle = {
+  width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
+  padding: '9px', background: 'rgba(212,175,55,0.12)', border: '1px solid rgba(212,175,55,0.3)',
+  color: '#d4af37', borderRadius: '8px', fontSize: '12px', fontWeight: 700, cursor: 'pointer',
 };
 
 export default CataloguePublic;

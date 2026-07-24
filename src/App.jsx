@@ -4,6 +4,7 @@ import { loadSavedTheme } from './themes';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { PanierProvider } from './context/PanierContext';
 import Login from './pages/auth/Login';
 import Dashboard from './pages/dashboard/Dashboard';
 import Produits from './pages/produits/Produits';
@@ -20,6 +21,8 @@ import InscriptionClient from './pages/auth/InscriptionClient';
 import ConnexionClient from './pages/auth/ConnexionClient';
 import MonCompte from './pages/clients/MonCompte';
 import CataloguePublic from './pages/public/CataloguePublic';
+import Panier from './pages/public/Panier';
+import Checkout from './pages/public/Checkout';
 
 import Accueil from './pages/accueil/Accueil';
 
@@ -35,6 +38,15 @@ const ProtectedRoute = ({ children, roles }) => {
     return <Navigate to="/dashboard" replace />;
   }
 
+  return children;
+};
+
+// Route protégée côté CLIENT — redirige vers connexion-client si pas de token client
+const ProtectedClientRoute = ({ children }) => {
+  const clientToken = localStorage.getItem('clientToken');
+  if (!clientToken) {
+    return <Navigate to="/connexion-client" replace />;
+  }
   return children;
 };
 
@@ -68,8 +80,16 @@ const AppRoutes = () => {
       {/* Routes publiques — espace client */}
       <Route path="/inscription-client" element={<InscriptionClient />} />
       <Route path="/connexion-client" element={<ConnexionClient />} />
-      <Route path="/mon-compte" element={<MonCompte />} />
       <Route path="/catalogue" element={<CataloguePublic />} />
+      <Route path="/panier" element={<Panier />} />
+
+      {/* Routes protégées — nécessitent connexion CLIENT */}
+      <Route path="/mon-compte" element={
+        <ProtectedClientRoute><MonCompte /></ProtectedClientRoute>
+      } />
+      <Route path="/checkout" element={
+        <ProtectedClientRoute><Checkout /></ProtectedClientRoute>
+      } />
 
       {/* Route publique — login */}
       <Route
@@ -79,7 +99,7 @@ const AppRoutes = () => {
           : <Navigate to="/dashboard" replace />}
       />
 
-      {/* Routes protégées */}
+      {/* Routes protégées — Admin/Vendeur/Caissier */}
       <Route path="/dashboard" element={
         <ProtectedRoute>
           <Dashboard />
@@ -163,17 +183,19 @@ function App() {
 
   return (
     <AuthProvider>
-      <BrowserRouter>
-        <AppRoutes />
-        <ToastContainer
-          position="top-right"
-          autoClose={3000}
-          hideProgressBar={false}
-          newestOnTop
-          closeOnClick
-          pauseOnHover
-        />
-      </BrowserRouter>
+      <PanierProvider>
+        <BrowserRouter>
+          <AppRoutes />
+          <ToastContainer
+            position="top-right"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop
+            closeOnClick
+            pauseOnHover
+          />
+        </BrowserRouter>
+      </PanierProvider>
     </AuthProvider>
   );
 }
