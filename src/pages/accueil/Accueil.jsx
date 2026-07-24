@@ -65,27 +65,27 @@ const Accueil = () => {
               </button>
             </div>
 
-           <div style={{ marginTop: '16px' }}>
-            <button
-              onClick={scrollToDecouvrir}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '7px',
-                background: 'transparent',
-                border: 'none',
-                color: 'rgba(255, 255, 255, 0.45)',
-                fontSize: '11px',
-                fontWeight: 600,
-                cursor: 'pointer',
-                fontFamily: 'Inter, sans-serif',
-                padding: '4px',
-                outline: 'none',
-              }}
-            >
-              Découvrir la maison
-              <i className="ti ti-arrow-down" style={{ fontSize: '12px', color: '#d4af37' }} />
-            </button>
+            <div style={{ marginTop: '16px' }}>
+  <button
+    onClick={() => navigate('/catalogue')}
+    style={{
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: '7px',
+      background: 'transparent',
+      border: 'none',
+      color: 'rgba(255, 255, 255, 0.45)',
+      fontSize: '11px',
+      fontWeight: 600,
+      cursor: 'pointer',
+      fontFamily: 'Inter, sans-serif',
+      padding: '4px',
+      outline: 'none',
+    }}
+  >
+    Découvrir la maison
+    <i className="ti ti-arrow-right" style={{ fontSize: '12px', color: '#d4af37' }} />
+  </button>
 </div>
           </div>
 
