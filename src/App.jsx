@@ -18,6 +18,7 @@ import Fournisseurs from './pages/fournisseurs/Fournisseurs';
 import Categories from './pages/categories/Categories';
 import InscriptionClient from './pages/auth/InscriptionClient';
 import ConnexionClient from './pages/auth/ConnexionClient';
+import MonCompte from './pages/client/MonCompte';
 
 import Accueil from './pages/accueil/Accueil';
 
@@ -66,6 +67,7 @@ const AppRoutes = () => {
       <Route path="/inscription-client" element={<InscriptionClient />} />
         <Route path="/connexion-client" element={<ConnexionClient />} />
 
+          <Route path="/mon-compte" element={<MonCompte />} />
       {/* Route publique — login */}
       <Route
         path="/login"
