@@ -22,6 +22,7 @@ import ConnexionClient from './pages/auth/ConnexionClient';
 import MonCompte from './pages/clients/MonCompte';
 import CataloguePublic from './pages/public/CataloguePublic';
 import Panier from './pages/public/Panier';
+import Rapports from './pages/rapports/Rapports';
 import Checkout from './pages/public/Checkout';
 
 import Accueil from './pages/accueil/Accueil';
@@ -98,6 +99,11 @@ const AppRoutes = () => {
           ? <Login />
           : <Navigate to="/dashboard" replace />}
       />
+      <Route path="/rapports" element={
+      <ProtectedRoute roles={['ADMIN']}>
+        <Rapports />
+      </ProtectedRoute>
+    } />
 
       {/* Routes protégées — Admin/Vendeur/Caissier */}
       <Route path="/dashboard" element={

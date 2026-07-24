@@ -97,6 +97,7 @@ const Navbar = () => {
   label:'Catégories', show:hasRole('ADMIN') },
 { path:'/fournisseurs', icon:'ti-truck',
   label:'Fournisseurs', show:hasRole('ADMIN') },
+  { path:'/rapports', icon:'ti-chart-bar', label:'Rapports', show:hasRole('ADMIN') },
   ].filter(l => l.show);
 
   const iconBtnStyle = {
